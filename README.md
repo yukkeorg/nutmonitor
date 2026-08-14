@@ -63,6 +63,8 @@ gnome-extensions prefs  nutmonitor@yukke.org   # make prefs  でも可
 | `poll-interval` | `5` | 取得間隔（秒） |
 | `connection-timeout` | `5` | 応答待ちの上限（秒） |
 | `panel-label` | `charge` | トップバーに出す値: `charge` / `runtime` / `load` / `status` / `none` |
+| `panel-box` | `right` | トップバーのどの区画に置くか: `left` / `center` / `right` |
+| `panel-position` | `0` | 区画内での並び順。0 が一番左で、区画の項目数を超える値は末尾になる |
 | `show-menu-detail` | `true` | メニューに電圧・定格出力を出すか |
 | `notify-*` | `true` | 通知の種類ごとの ON/OFF |
 

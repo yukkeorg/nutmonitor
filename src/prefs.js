@@ -14,6 +14,7 @@ import * as Nut from './lib/nutClient.js';
 import * as UpsState from './lib/upsState.js';
 
 const PANEL_LABEL_MODES = ['charge', 'runtime', 'load', 'status', 'none'];
+const PANEL_BOXES = ['left', 'center', 'right'];
 
 export default class NutMonitorPreferences extends ExtensionPreferences {
     fillPreferencesWindow(window) {
@@ -122,22 +123,31 @@ export default class NutMonitorPreferences extends ExtensionPreferences {
         labels.append(_('Status'));
         labels.append(_('Nothing'));
 
-        const panelLabel = new Adw.ComboRow({
+        group.add(this._enumRow(settings, 'panel-label', PANEL_LABEL_MODES, labels, {
             title: _('Text next to the icon'),
-            model: labels,
-            selected: Math.max(0,
-                PANEL_LABEL_MODES.indexOf(settings.get_string('panel-label'))),
+        }));
+
+        const boxes = new Gtk.StringList();
+        boxes.append(_('Left'));
+        boxes.append(_('Center'));
+        boxes.append(_('Right'));
+
+        group.add(this._enumRow(settings, 'panel-box', PANEL_BOXES, boxes, {
+            title: _('Section of the top bar'),
+        }));
+
+        const position = new Adw.SpinRow({
+            title: _('Order within the section'),
+            subtitle: _('0 is leftmost. The load order of other extensions can still shift it.'),
+            adjustment: new Gtk.Adjustment({
+                lower: 0,
+                upper: 20,
+                step_increment: 1,
+                page_increment: 5,
+            }),
         });
-        panelLabel.connect('notify::selected', row => {
-            settings.set_string('panel-label', PANEL_LABEL_MODES[row.selected]);
-        });
-        settings.connect('changed::panel-label', () => {
-            const index = PANEL_LABEL_MODES.indexOf(settings.get_string('panel-label'));
-            if (index >= 0 && index !== panelLabel.selected) {
-                panelLabel.selected = index;
-            }
-        });
-        group.add(panelLabel);
+        settings.bind('panel-position', position, 'value', Gio.SettingsBindFlags.DEFAULT);
+        group.add(position);
 
         const detail = new Adw.SwitchRow({
             title: _('Show detailed rows'),
@@ -147,6 +157,36 @@ export default class NutMonitorPreferences extends ExtensionPreferences {
         group.add(detail);
 
         return group;
+    }
+
+    /**
+     * A combo row for a string enum key, kept in sync in both directions.
+     *
+     * @param {Gio.Settings} settings the extension settings
+     * @param {string} key the enum key to bind to
+     * @param {string[]} nicks the enum nicks, in the order of the model
+     * @param {Gtk.StringList} model the labels shown to the user
+     * @param {object} params extra Adw.ComboRow properties, e.g. the title
+     * @returns {Adw.ComboRow} the row, ready to be added to a group
+     */
+    _enumRow(settings, key, nicks, model, params) {
+        const row = new Adw.ComboRow({
+            ...params,
+            model,
+            selected: Math.max(0, nicks.indexOf(settings.get_string(key))),
+        });
+
+        row.connect('notify::selected', () => {
+            settings.set_string(key, nicks[row.selected]);
+        });
+        settings.connect(`changed::${key}`, () => {
+            const index = nicks.indexOf(settings.get_string(key));
+            if (index >= 0 && index !== row.selected) {
+                row.selected = index;
+            }
+        });
+
+        return row;
     }
 
     _buildNotificationGroup(settings) {

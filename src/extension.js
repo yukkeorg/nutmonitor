@@ -235,19 +235,53 @@ export default class NutMonitorExtension extends Extension {
     enable() {
         this._settings = this.getSettings();
         this._notifier = new Notifier(this._settings);
-        this._indicator = new NutIndicator(this);
+        this._indicator = null;
         this._timerId = 0;
         this._cancellable = null;
         this._pending = false;
         this._refreshRequested = false;
         this._failureCount = 0;
+        this._lastSnapshot = null;
+        this._lastConfig = null;
+        this._lastError = null;
 
-        Main.panel.addToStatusArea(this.uuid, this._indicator);
+        this._addIndicator();
 
         this._settings.connectObject('changed',
             (settings, key) => this._onSettingChanged(key), this);
 
         this.refresh();
+    }
+
+    /** Create the indicator and put it where the settings ask for. */
+    _addIndicator() {
+        this._indicator = new NutIndicator(this);
+
+        // position is an index within the box; Clutter appends when it is
+        // larger than the number of items already there.
+        Main.panel.addToStatusArea(this.uuid, this._indicator,
+            this._settings.get_int('panel-position'),
+            this._settings.get_string('panel-box'));
+    }
+
+    /**
+     * Move the indicator to the section and slot the settings now ask for.
+     * The panel has no API to move an existing indicator, so it is rebuilt and
+     * repainted from the last known state; polling keeps running meanwhile.
+     */
+    _relocateIndicator() {
+        if (this._settings === null) {
+            return;
+        }
+
+        this._indicator?.destroy();
+        this._addIndicator();
+
+        if (this._lastSnapshot !== null) {
+            this._indicator.update(this._lastSnapshot, this._lastConfig);
+        } else if (this._lastError !== null) {
+            this._indicator.setError(this._lastError, this._lastConfig);
+        }
     }
 
     disable() {
@@ -273,6 +307,9 @@ export default class NutMonitorExtension extends Extension {
         this._settings = null;
         this._pending = false;
         this._refreshRequested = false;
+        this._lastSnapshot = null;
+        this._lastConfig = null;
+        this._lastError = null;
     }
 
     /** Cancel whatever is in flight and poll the server right away. */
@@ -294,8 +331,13 @@ export default class NutMonitorExtension extends Extension {
     }
 
     _onSettingChanged(key) {
+        const placementKeys = ['panel-box', 'panel-position'];
         const displayKeys = ['panel-label', 'show-menu-detail'];
 
+        if (placementKeys.includes(key)) {
+            this._relocateIndicator();
+            return;
+        }
         if (displayKeys.includes(key)) {
             this._indicator?.rerender();
             return;
@@ -368,6 +410,9 @@ export default class NutMonitorExtension extends Extension {
             }
 
             this._failureCount = 0;
+            this._lastSnapshot = snapshot;
+            this._lastConfig = config;
+            this._lastError = null;
             this._indicator?.update(snapshot, config);
             this._notifier?.onSnapshot(snapshot);
         } catch (error) {
@@ -378,6 +423,9 @@ export default class NutMonitorExtension extends Extension {
 
             const message = Nut.describeError(error);
             this._failureCount++;
+            this._lastSnapshot = null;
+            this._lastConfig = config;
+            this._lastError = message;
             this._indicator?.setError(message, config);
             this._notifier?.onFailure(this._failureCount, message);
         } finally {
