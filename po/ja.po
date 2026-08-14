@@ -1,0 +1,368 @@
+# Japanese translation for NUT UPS Monitor.
+# This file is distributed under the same license as the extension.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: NUT UPS Monitor\n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: 2026-08-14 21:00+0900\n"
+"Last-Translator: NUT UPS Monitor contributors\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: src/extension.js
+msgid "UPS"
+msgstr "UPS"
+
+#: src/extension.js
+msgid "Status"
+msgstr "状態"
+
+#: src/extension.js src/prefs.js
+msgid "Battery charge"
+msgstr "バッテリー残量"
+
+#: src/extension.js src/prefs.js
+msgid "Runtime left"
+msgstr "残り時間"
+
+#: src/extension.js src/prefs.js
+msgid "Load"
+msgstr "負荷"
+
+#: src/extension.js
+msgid "Input voltage"
+msgstr "入力電圧"
+
+#: src/extension.js
+msgid "Output voltage"
+msgstr "出力電圧"
+
+#: src/extension.js
+msgid "Battery voltage"
+msgstr "バッテリー電圧"
+
+#: src/extension.js
+msgid "Nominal power"
+msgstr "定格出力"
+
+#: src/extension.js
+msgid "Refresh now"
+msgstr "今すぐ更新"
+
+#: src/extension.js
+msgid "Settings…"
+msgstr "設定…"
+
+#: src/extension.js src/lib/notifier.js
+msgid "UPS unreachable"
+msgstr "UPS に接続できません"
+
+#: src/prefs.js
+msgid "UPS Monitor"
+msgstr "UPS モニター"
+
+#: src/prefs.js
+msgid "Connection"
+msgstr "接続"
+
+#: src/prefs.js
+msgid "Where upsd is running. Reading UPS data usually needs no credentials."
+msgstr "upsd の場所を指定します。UPS の情報を読むだけなら通常は認証は不要です。"
+
+#: src/prefs.js
+msgid "Host"
+msgstr "ホスト"
+
+#: src/prefs.js
+msgid "Port"
+msgstr "ポート"
+
+#: src/prefs.js
+msgid "UPS name"
+msgstr "UPS 名"
+
+#: src/prefs.js
+msgid "Leave empty to use the first UPS the server reports"
+msgstr "空欄にすると、サーバーが最初に返した UPS を使います"
+
+#: src/prefs.js
+msgid "User name (optional)"
+msgstr "ユーザー名 (任意)"
+
+#: src/prefs.js
+msgid "Password (optional)"
+msgstr "パスワード (任意)"
+
+#: src/prefs.js
+msgid "Update interval"
+msgstr "更新間隔"
+
+#: src/prefs.js
+msgid "In seconds"
+msgstr "秒単位"
+
+#: src/prefs.js
+msgid "Connection timeout"
+msgstr "接続タイムアウト"
+
+#: src/prefs.js
+msgid "Test connection"
+msgstr "接続テスト"
+
+#: src/prefs.js
+msgid "Not tested yet"
+msgstr "未実行"
+
+#: src/prefs.js
+msgid "Test"
+msgstr "テスト"
+
+#: src/prefs.js
+msgid "Display"
+msgstr "表示"
+
+#: src/prefs.js
+msgid "Nothing"
+msgstr "表示しない"
+
+#: src/prefs.js
+msgid "Text next to the icon"
+msgstr "アイコンの横に表示する情報"
+
+#: src/prefs.js
+msgid "Show detailed rows"
+msgstr "詳細な項目を表示する"
+
+#: src/prefs.js
+msgid "Voltages and nominal power in the menu"
+msgstr "メニューに電圧と定格出力を表示します"
+
+#: src/prefs.js
+msgid "Notifications"
+msgstr "通知"
+
+#: src/prefs.js src/lib/notifier.js
+msgid "Power failure"
+msgstr "停電"
+
+#: src/prefs.js
+msgid "The UPS switched to battery"
+msgstr "UPS がバッテリー駆動に切り替わったとき"
+
+#: src/prefs.js src/lib/upsState.js
+msgid "Low battery"
+msgstr "低バッテリー"
+
+#: src/prefs.js
+msgid "The UPS reports the low battery flag"
+msgstr "UPS が低バッテリーを報告したとき"
+
+#: src/prefs.js src/lib/notifier.js
+msgid "Mains power restored"
+msgstr "商用電源が復旧しました"
+
+#: src/prefs.js
+msgid "The UPS is back on line power"
+msgstr "UPS が商用電源に戻ったとき"
+
+#: src/prefs.js src/lib/upsState.js
+msgid "Replace battery"
+msgstr "要バッテリー交換"
+
+#: src/prefs.js
+msgid "The UPS asks for a new battery"
+msgstr "UPS がバッテリーの交換を求めたとき"
+
+#: src/prefs.js
+msgid "Communication lost"
+msgstr "通信断"
+
+#: src/prefs.js
+msgid "The NUT server cannot be reached"
+msgstr "NUT サーバーに接続できないとき"
+
+#: src/prefs.js
+msgid "Connecting…"
+msgstr "接続中…"
+
+#: src/prefs.js
+msgid "Connected to %s: %s, %d variables"
+msgstr "%s に接続しました: %s、変数 %d 件"
+
+#: src/prefs.js
+msgid "Failed: %s"
+msgstr "失敗: %s"
+
+#: src/lib/notifier.js
+msgid "UPS reachable again"
+msgstr "UPS との通信が回復しました"
+
+#: src/lib/notifier.js
+msgid "Communication with the NUT server has been restored."
+msgstr "NUT サーバーとの通信が回復しました。"
+
+#: src/lib/notifier.js
+msgid "UPS battery is low"
+msgstr "UPS のバッテリー残量が低下しています"
+
+#: src/lib/notifier.js
+msgid "The UPS is running on line power again."
+msgstr "UPS は商用電源での運転に戻りました。"
+
+#: src/lib/notifier.js
+msgid "UPS battery needs replacing"
+msgstr "UPS のバッテリー交換が必要です"
+
+#: src/lib/notifier.js
+msgid "The UPS reports that its battery has reached the end of its life."
+msgstr "UPS がバッテリーの寿命を報告しています。"
+
+#: src/lib/notifier.js
+msgid "The UPS switched to battery. Charge %s, about %s left."
+msgstr "UPS がバッテリー駆動に切り替わりました。残量 %s、あと約 %s です。"
+
+#: src/lib/notifier.js
+msgid "The UPS switched to battery power."
+msgstr "UPS がバッテリー駆動に切り替わりました。"
+
+#: src/lib/notifier.js
+msgid "About %s of runtime left. Save your work and shut down."
+msgstr "残り約 %s です。作業を保存してシャットダウンしてください。"
+
+#: src/lib/notifier.js
+msgid "Save your work and shut down."
+msgstr "作業を保存してシャットダウンしてください。"
+
+#: src/lib/nutClient.js
+msgid "The server closed the connection unexpectedly"
+msgstr "サーバーが接続を切断しました"
+
+#: src/lib/nutClient.js
+msgid "Unexpected reply from the server"
+msgstr "サーバーから予期しない応答がありました"
+
+#: src/lib/nutClient.js
+msgid "The request was cancelled"
+msgstr "要求は取り消されました"
+
+#: src/lib/nutClient.js
+msgid "The server did not answer in time"
+msgstr "サーバーが応答しませんでした (タイムアウト)"
+
+#: src/lib/nutClient.js
+msgid "Cannot reach the NUT server"
+msgstr "NUT サーバーに接続できません"
+
+#: src/lib/nutClient.js
+msgid "The server has no UPS configured"
+msgstr "サーバーに UPS が設定されていません"
+
+#: src/lib/nutClient.js
+msgid "Access denied: check the user name, the password and upsd.users"
+msgstr "アクセスが拒否されました。ユーザー名・パスワードと upsd.users を確認してください"
+
+#: src/lib/nutClient.js
+msgid "The server does not know a UPS with that name"
+msgstr "その名前の UPS はサーバーにありません"
+
+#: src/lib/nutClient.js
+msgid "This server requires a user name and a password"
+msgstr "このサーバーはユーザー名とパスワードを必要とします"
+
+#: src/lib/nutClient.js
+msgid "The server rejected the request as invalid"
+msgstr "サーバーが要求を不正として拒否しました"
+
+#: src/lib/nutClient.js
+msgid "Unknown error"
+msgstr "不明なエラー"
+
+#: src/lib/upsState.js
+msgid "Online"
+msgstr "オンライン"
+
+#: src/lib/upsState.js
+msgid "On battery"
+msgstr "バッテリー駆動"
+
+#: src/lib/upsState.js
+msgid "High battery"
+msgstr "高バッテリー"
+
+#: src/lib/upsState.js
+msgid "Charging"
+msgstr "充電中"
+
+#: src/lib/upsState.js
+msgid "Discharging"
+msgstr "放電中"
+
+#: src/lib/upsState.js
+msgid "Bypass"
+msgstr "バイパス"
+
+#: src/lib/upsState.js
+msgid "Calibrating"
+msgstr "校正中"
+
+#: src/lib/upsState.js
+msgid "Overloaded"
+msgstr "過負荷"
+
+#: src/lib/upsState.js
+msgid "Trimming voltage"
+msgstr "降圧中"
+
+#: src/lib/upsState.js
+msgid "Boosting voltage"
+msgstr "昇圧中"
+
+#: src/lib/upsState.js
+msgid "Output off"
+msgstr "出力停止"
+
+#: src/lib/upsState.js
+msgid "Forced shutdown"
+msgstr "強制シャットダウン"
+
+#: src/lib/upsState.js
+msgid "Alarm"
+msgstr "異常"
+
+#: src/lib/upsState.js
+msgid "Unknown"
+msgstr "不明"
+
+#. Separator between status flags
+#: src/lib/upsState.js
+msgid ", "
+msgstr "、"
+
+#: src/lib/upsState.js
+msgid "%d%%"
+msgstr "%d%%"
+
+#: src/lib/upsState.js
+msgid "%s V"
+msgstr "%s V"
+
+#: src/lib/upsState.js
+msgid "%d W"
+msgstr "%d W"
+
+#: src/lib/upsState.js
+msgid "%d h %d min"
+msgstr "%d 時間 %d 分"
+
+#: src/lib/upsState.js
+msgid "%d min"
+msgstr "%d 分"
+
+#: src/lib/upsState.js
+msgid "%d s"
+msgstr "%d 秒"

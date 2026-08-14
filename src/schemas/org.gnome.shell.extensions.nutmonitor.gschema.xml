@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="nutmonitor@yukke.org">
+
+  <enum id="org.gnome.shell.extensions.nutmonitor.panel-label">
+    <value nick="charge" value="0"/>
+    <value nick="runtime" value="1"/>
+    <value nick="load" value="2"/>
+    <value nick="status" value="3"/>
+    <value nick="none" value="4"/>
+  </enum>
+
+  <schema id="org.gnome.shell.extensions.nutmonitor"
+          path="/org/gnome/shell/extensions/nutmonitor/">
+
+    <key name="host" type="s">
+      <default>'localhost'</default>
+      <summary>NUT server host</summary>
+      <description>Host name or address of the machine running upsd.</description>
+    </key>
+
+    <key name="port" type="i">
+      <range min="1" max="65535"/>
+      <default>3493</default>
+      <summary>NUT server port</summary>
+      <description>TCP port upsd listens on. The default is 3493.</description>
+    </key>
+
+    <key name="ups-name" type="s">
+      <default>''</default>
+      <summary>UPS name</summary>
+      <description>Name of the UPS as configured in ups.conf. Leave empty to use the first UPS the server reports.</description>
+    </key>
+
+    <key name="username" type="s">
+      <default>''</default>
+      <summary>User name</summary>
+      <description>User name from upsd.users. Leave empty when no authentication is required.</description>
+    </key>
+
+    <key name="password" type="s">
+      <default>''</default>
+      <summary>Password</summary>
+      <description>Password matching the user name. Stored in dconf as plain text.</description>
+    </key>
+
+    <key name="poll-interval" type="i">
+      <range min="1" max="300"/>
+      <default>5</default>
+      <summary>Update interval</summary>
+      <description>How often the UPS is polled, in seconds.</description>
+    </key>
+
+    <key name="connection-timeout" type="i">
+      <range min="1" max="60"/>
+      <default>5</default>
+      <summary>Connection timeout</summary>
+      <description>How long to wait for the server before giving up, in seconds.</description>
+    </key>
+
+    <key name="panel-label" enum="org.gnome.shell.extensions.nutmonitor.panel-label">
+      <default>'charge'</default>
+      <summary>Text shown in the top bar</summary>
+      <description>Which value is shown next to the icon in the top bar.</description>
+    </key>
+
+    <key name="show-menu-detail" type="b">
+      <default>true</default>
+      <summary>Show detailed rows in the menu</summary>
+      <description>Show voltages, battery voltage and nominal power in the menu.</description>
+    </key>
+
+    <key name="notify-on-battery" type="b">
+      <default>true</default>
+      <summary>Notify when the UPS switches to battery</summary>
+      <description>Show a notification when a power failure is detected.</description>
+    </key>
+
+    <key name="notify-low-battery" type="b">
+      <default>true</default>
+      <summary>Notify on low battery</summary>
+      <description>Show a notification when the UPS reports a low battery.</description>
+    </key>
+
+    <key name="notify-on-line" type="b">
+      <default>true</default>
+      <summary>Notify when mains power returns</summary>
+      <description>Show a notification when the UPS is back on line power.</description>
+    </key>
+
+    <key name="notify-replace-battery" type="b">
+      <default>true</default>
+      <summary>Notify when the battery needs replacing</summary>
+      <description>Show a notification when the UPS reports the replace battery flag.</description>
+    </key>
+
+    <key name="notify-comm-lost" type="b">
+      <default>true</default>
+      <summary>Notify when communication is lost</summary>
+      <description>Show a notification when the NUT server cannot be reached several times in a row.</description>
+    </key>
+
+  </schema>
+</schemalist>

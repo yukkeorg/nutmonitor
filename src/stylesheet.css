@@ -1,0 +1,34 @@
+/* Shell themes pad and space .system-status-icon on both sides (Yaru uses
+ * padding: 0 6px and margin: 0 4px), which would add to whatever margin the
+ * label has. Drop that on the right so the gap has a single knob below.
+ * The selector matches the theme's own specificity and wins by coming later. */
+#panel .panel-button .nutmonitor-icon {
+    padding-right: 0;
+    margin-right: 0;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+/* ここだけで、アイコンと数値の間隔を調整する */
+#panel .panel-button .nutmonitor-panel-label {
+    margin-left: 4px;
+}
+
+.nutmonitor-header-title {
+    font-weight: bold;
+}
+
+.nutmonitor-header-subtitle {
+    font-size: 0.9em;
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 22em;
+}
+
+.nutmonitor-value {
+    font-feature-settings: "tnum";
+    padding-left: 1.5em;
+}
+
+.nutmonitor-alert {
+    color: #f66151;
+}

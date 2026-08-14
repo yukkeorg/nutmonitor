@@ -1,0 +1,4 @@
+build/
+src/locale/
+src/schemas/gschemas.compiled
+po/*.mo

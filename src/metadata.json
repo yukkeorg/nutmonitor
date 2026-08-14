@@ -1,0 +1,10 @@
+{
+  "uuid": "nutmonitor@yukke.org",
+  "name": "NUT UPS Monitor",
+  "description": "Shows the status of a UPS managed by NUT (Network UPS Tools) in the top bar, and notifies you when power is lost or the battery runs low.",
+  "shell-version": ["50"],
+  "settings-schema": "org.gnome.shell.extensions.nutmonitor",
+  "gettext-domain": "nutmonitor@yukke.org",
+  "url": "https://github.com/yukkeorg/nutmonitor",
+  "version-name": "0.9.0"
+}

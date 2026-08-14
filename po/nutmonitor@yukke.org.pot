@@ -1,0 +1,380 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR NUT UPS Monitor contributors
+# This file is distributed under the same license as the NUT UPS Monitor package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: NUT UPS Monitor\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-14 21:29+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/extension.js:27 src/extension.js:64 src/lib/notifier.js:125
+msgid "UPS"
+msgstr ""
+
+#: src/extension.js:81 src/prefs.js:122
+msgid "Status"
+msgstr ""
+
+#: src/extension.js:82 src/prefs.js:119
+msgid "Battery charge"
+msgstr ""
+
+#: src/extension.js:83 src/prefs.js:120
+msgid "Runtime left"
+msgstr ""
+
+#: src/extension.js:84 src/prefs.js:121
+msgid "Load"
+msgstr ""
+
+#: src/extension.js:85
+msgid "Input voltage"
+msgstr ""
+
+#: src/extension.js:86
+msgid "Output voltage"
+msgstr ""
+
+#: src/extension.js:87
+msgid "Battery voltage"
+msgstr ""
+
+#: src/extension.js:88
+msgid "Nominal power"
+msgstr ""
+
+#: src/extension.js:93
+msgid "Refresh now"
+msgstr ""
+
+#: src/extension.js:97
+msgid "Settings…"
+msgstr ""
+
+#: src/extension.js:201 src/lib/notifier.js:97
+msgid "UPS unreachable"
+msgstr ""
+
+#: src/prefs.js:22
+msgid "UPS Monitor"
+msgstr ""
+
+#: src/prefs.js:39
+msgid "Connection"
+msgstr ""
+
+#: src/prefs.js:40
+msgid "Where upsd is running. Reading UPS data usually needs no credentials."
+msgstr ""
+
+#: src/prefs.js:43
+msgid "Host"
+msgstr ""
+
+#: src/prefs.js:48
+msgid "Port"
+msgstr ""
+
+#: src/prefs.js:59
+msgid "UPS name"
+msgstr ""
+
+#: src/prefs.js:60
+msgid "Leave empty to use the first UPS the server reports"
+msgstr ""
+
+#: src/prefs.js:64
+msgid "User name (optional)"
+msgstr ""
+
+#: src/prefs.js:68
+msgid "Password (optional)"
+msgstr ""
+
+#: src/prefs.js:73
+msgid "Update interval"
+msgstr ""
+
+#: src/prefs.js:74 src/prefs.js:87
+msgid "In seconds"
+msgstr ""
+
+#: src/prefs.js:86
+msgid "Connection timeout"
+msgstr ""
+
+#: src/prefs.js:99
+msgid "Test connection"
+msgstr ""
+
+#: src/prefs.js:100
+msgid "Not tested yet"
+msgstr ""
+
+#: src/prefs.js:103
+msgid "Test"
+msgstr ""
+
+#: src/prefs.js:116
+msgid "Display"
+msgstr ""
+
+#: src/prefs.js:123
+msgid "Nothing"
+msgstr ""
+
+#: src/prefs.js:126
+msgid "Text next to the icon"
+msgstr ""
+
+#: src/prefs.js:143
+msgid "Show detailed rows"
+msgstr ""
+
+#: src/prefs.js:144
+msgid "Voltages and nominal power in the menu"
+msgstr ""
+
+#: src/prefs.js:153
+msgid "Notifications"
+msgstr ""
+
+#: src/prefs.js:156 src/lib/notifier.js:53
+msgid "Power failure"
+msgstr ""
+
+#: src/prefs.js:156
+msgid "The UPS switched to battery"
+msgstr ""
+
+#: src/prefs.js:157 src/lib/upsState.js:50
+msgid "Low battery"
+msgstr ""
+
+#: src/prefs.js:157
+msgid "The UPS reports the low battery flag"
+msgstr ""
+
+#: src/prefs.js:158 src/lib/notifier.js:66
+msgid "Mains power restored"
+msgstr ""
+
+#: src/prefs.js:158
+msgid "The UPS is back on line power"
+msgstr ""
+
+#: src/prefs.js:159 src/lib/upsState.js:54
+msgid "Replace battery"
+msgstr ""
+
+#: src/prefs.js:159
+msgid "The UPS asks for a new battery"
+msgstr ""
+
+#: src/prefs.js:160
+msgid "Communication lost"
+msgstr ""
+
+#: src/prefs.js:160
+msgid "The NUT server cannot be reached"
+msgstr ""
+
+#: src/prefs.js:195
+msgid "Connecting…"
+msgstr ""
+
+#: src/prefs.js:206
+#, javascript-format
+msgid "Connected to %s: %s, %d variables"
+msgstr ""
+
+#: src/prefs.js:215
+#, javascript-format
+msgid "Failed: %s"
+msgstr ""
+
+#: src/lib/notifier.js:36
+msgid "UPS reachable again"
+msgstr ""
+
+#: src/lib/notifier.js:37
+msgid "Communication with the NUT server has been restored."
+msgstr ""
+
+#: src/lib/notifier.js:59
+msgid "UPS battery is low"
+msgstr ""
+
+#: src/lib/notifier.js:67
+msgid "The UPS is running on line power again."
+msgstr ""
+
+#: src/lib/notifier.js:72
+msgid "UPS battery needs replacing"
+msgstr ""
+
+#: src/lib/notifier.js:73
+msgid "The UPS reports that its battery has reached the end of its life."
+msgstr ""
+
+#: src/lib/notifier.js:107
+#, javascript-format
+msgid "The UPS switched to battery. Charge %s, about %s left."
+msgstr ""
+
+#: src/lib/notifier.js:109
+msgid "The UPS switched to battery power."
+msgstr ""
+
+#: src/lib/notifier.js:117
+#, javascript-format
+msgid "About %s of runtime left. Save your work and shut down."
+msgstr ""
+
+#: src/lib/notifier.js:119
+msgid "Save your work and shut down."
+msgstr ""
+
+#: src/lib/nutClient.js:192
+msgid "The server closed the connection unexpectedly"
+msgstr ""
+
+#: src/lib/nutClient.js:225
+msgid "Unexpected reply from the server"
+msgstr ""
+
+#: src/lib/nutClient.js:383
+msgid "The request was cancelled"
+msgstr ""
+
+#: src/lib/nutClient.js:392
+msgid "The server did not answer in time"
+msgstr ""
+
+#: src/lib/nutClient.js:394
+msgid "Cannot reach the NUT server"
+msgstr ""
+
+#: src/lib/nutClient.js:396
+msgid "The server has no UPS configured"
+msgstr ""
+
+#: src/lib/nutClient.js:400
+msgid "Access denied: check the user name, the password and upsd.users"
+msgstr ""
+
+#: src/lib/nutClient.js:402
+msgid "The server does not know a UPS with that name"
+msgstr ""
+
+#: src/lib/nutClient.js:405
+msgid "This server requires a user name and a password"
+msgstr ""
+
+#: src/lib/nutClient.js:407
+msgid "The server rejected the request as invalid"
+msgstr ""
+
+#: src/lib/nutClient.js:409
+msgid "Unknown error"
+msgstr ""
+
+#: src/lib/upsState.js:46
+msgid "Online"
+msgstr ""
+
+#: src/lib/upsState.js:48
+msgid "On battery"
+msgstr ""
+
+#: src/lib/upsState.js:52
+msgid "High battery"
+msgstr ""
+
+#: src/lib/upsState.js:56
+msgid "Charging"
+msgstr ""
+
+#: src/lib/upsState.js:58
+msgid "Discharging"
+msgstr ""
+
+#: src/lib/upsState.js:60
+msgid "Bypass"
+msgstr ""
+
+#: src/lib/upsState.js:62
+msgid "Calibrating"
+msgstr ""
+
+#: src/lib/upsState.js:64
+msgid "Overloaded"
+msgstr ""
+
+#: src/lib/upsState.js:66
+msgid "Trimming voltage"
+msgstr ""
+
+#: src/lib/upsState.js:68
+msgid "Boosting voltage"
+msgstr ""
+
+#: src/lib/upsState.js:70
+msgid "Output off"
+msgstr ""
+
+#: src/lib/upsState.js:72
+msgid "Forced shutdown"
+msgstr ""
+
+#: src/lib/upsState.js:74
+msgid "Alarm"
+msgstr ""
+
+#: src/lib/upsState.js:101
+msgid "Unknown"
+msgstr ""
+
+#: src/lib/upsState.js:115
+msgid ", "
+msgstr ""
+
+#: src/lib/upsState.js:193
+#, javascript-format
+msgid "%d%%"
+msgstr ""
+
+#: src/lib/upsState.js:206
+#, javascript-format
+msgid "%s V"
+msgstr ""
+
+#: src/lib/upsState.js:219
+#, javascript-format
+msgid "%d W"
+msgstr ""
+
+#: src/lib/upsState.js:238
+#, javascript-format
+msgid "%d h %d min"
+msgstr ""
+
+#: src/lib/upsState.js:241
+#, javascript-format
+msgid "%d min"
+msgstr ""
+
+#: src/lib/upsState.js:243
+#, javascript-format
+msgid "%d s"
+msgstr ""
