@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NUT UPS Monitor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-14 22:32+0900\n"
+"POT-Creation-Date: 2026-08-16 00:08+0900\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,51 +17,51 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/extension.js:27 src/extension.js:71 src/lib/notifier.js:124
+#: src/extension.js:28 src/extension.js:72 src/lib/notifier.js:124
 msgid "UPS"
 msgstr ""
 
-#: src/extension.js:88 src/prefs.js:123
+#: src/extension.js:96 src/prefs.js:123
 msgid "Status"
 msgstr ""
 
-#: src/extension.js:89 src/prefs.js:120
+#: src/extension.js:97 src/prefs.js:120
 msgid "Battery charge"
 msgstr ""
 
-#: src/extension.js:90 src/prefs.js:121
+#: src/extension.js:98 src/prefs.js:121
 msgid "Runtime left"
 msgstr ""
 
-#: src/extension.js:91 src/prefs.js:122
+#: src/extension.js:99 src/prefs.js:122
 msgid "Load"
 msgstr ""
 
-#: src/extension.js:92
+#: src/extension.js:100
 msgid "Input voltage"
 msgstr ""
 
-#: src/extension.js:93
+#: src/extension.js:101
 msgid "Output voltage"
 msgstr ""
 
-#: src/extension.js:94
+#: src/extension.js:102
 msgid "Battery voltage"
 msgstr ""
 
-#: src/extension.js:95
+#: src/extension.js:103
 msgid "Nominal power"
 msgstr ""
 
-#: src/extension.js:100
+#: src/extension.js:108
 msgid "Refresh now"
 msgstr ""
 
-#: src/extension.js:104
+#: src/extension.js:112
 msgid "Settings…"
 msgstr ""
 
-#: src/extension.js:216 src/lib/notifier.js:96
+#: src/extension.js:253 src/lib/notifier.js:96
 msgid "UPS unreachable"
 msgstr ""
 
@@ -311,6 +311,38 @@ msgstr ""
 
 #: src/lib/nutClient.js:439
 msgid "Unknown error"
+msgstr ""
+
+#: src/lib/serviceState.js:139
+msgid "Not installed"
+msgstr ""
+
+#: src/lib/serviceState.js:142
+msgid "Masked"
+msgstr ""
+
+#: src/lib/serviceState.js:147
+msgid "Running"
+msgstr ""
+
+#: src/lib/serviceState.js:149
+msgid "Starting…"
+msgstr ""
+
+#: src/lib/serviceState.js:151
+msgid "Stopping…"
+msgstr ""
+
+#: src/lib/serviceState.js:153
+msgid "Reloading…"
+msgstr ""
+
+#: src/lib/serviceState.js:155
+msgid "Stopped"
+msgstr ""
+
+#: src/lib/serviceState.js:157
+msgid "Failed"
 msgstr ""
 
 #: src/lib/upsState.js:46

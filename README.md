@@ -7,6 +7,7 @@ notifies you on power failure, low battery, mains recovery and lost contact.
 [🔋 100%]                 ← top bar
  ├ myups@localhost
  ├ Mock Power Corp. UPS 1500
+ ├ nut-monitor.service   Running
  ├ Status            Online
  ├ Battery charge    100%
  ├ Runtime left      1 h 23 min
@@ -23,6 +24,8 @@ notifies you on power failure, low battery, mains recovery and lost contact.
 - Speaks the NUT network protocol (TCP 3493) straight from GJS — no `upsc` or
   any other external command.
 - Works with a local or a remote `upsd`. Authentication is optional.
+- Reports whether the local NUT service (`upsmon`) is running, read from systemd
+  over D-Bus. See [The NUT service row](#the-nut-service-row).
 - Every I/O has a timeout and a cancellable, so a slow server never freezes the
   shell.
 - Backs off exponentially (up to 60 s) while the server is unreachable, and
@@ -50,6 +53,33 @@ gnome-extensions prefs  nutmonitor@yukke.org   # or: make prefs
 ```
 
 `make pack` builds a distributable zip in `build/`.
+
+## The NUT service row
+
+Below the connection line the menu shows the state of the systemd unit that runs
+`upsmon`, the NUT client that shuts the machine down when the power goes out.
+The state is read from `org.freedesktop.systemd1` on the system bus with
+`ListUnitsByNames`, which systemd answers without any authorisation; nothing is
+ever started or stopped from here.
+
+The unit names come from upstream NUT, so the same lookup covers every
+distribution that ships NUT with systemd:
+
+| Distribution | `upsmon` unit | `upsd` unit |
+| --- | --- | --- |
+| Debian / Ubuntu | `nut-monitor.service` (alias `nut-client.service`) | `nut-server.service` |
+| Fedora / RHEL | `nut-monitor.service` | `nut-server.service` |
+| Arch Linux | `nut-monitor.service` | `nut-server.service` |
+| openSUSE | `nut-monitor.service` | `nut-server.service` |
+
+`upsmon.service` is tried as well, for older packages that named the unit after
+the daemon. The row disappears when none of those units exist, and when systemd
+cannot be reached at all — a machine that only watches a remote UPS through this
+extension needs no `upsmon` of its own.
+
+Note that this is the *monitoring client*, not the server this extension talks
+to. `upsmon` may well be running against a remote `upsd`, so the row is shown
+whatever `host` is set to.
 
 ## Settings
 

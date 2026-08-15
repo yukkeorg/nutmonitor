@@ -15,6 +15,7 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import * as Nut from './lib/nutClient.js';
+import * as ServiceState from './lib/serviceState.js';
 import * as UpsState from './lib/upsState.js';
 import {Notifier} from './lib/notifier.js';
 
@@ -81,6 +82,13 @@ class NutIndicator extends PanelMenu.Button {
         this._headerItem.add_child(headerBox);
         this.menu.addMenuItem(this._headerItem);
 
+        // Belongs to the connection block above rather than to the UPS
+        // readings, and stays visible when the server cannot be reached. Its
+        // title is the unit name, which differs between distributions, so it
+        // starts out empty and is filled in by setServiceState().
+        this._serviceRow = this._addRow('');
+        this._serviceRow.item.visible = false;
+
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
         // Rows are created once and only updated afterwards.
@@ -121,7 +129,7 @@ class NutIndicator extends PanelMenu.Button {
         item.add_child(value);
         this.menu.addMenuItem(item);
 
-        return {item, value, detail};
+        return {item, label, value, detail};
     }
 
     _setRow(row, text) {
@@ -148,6 +156,35 @@ class NutIndicator extends PanelMenu.Button {
         this._snapshot = snapshot;
         this._config = config;
         this._render();
+    }
+
+    /**
+     * Show whether the NUT service of this machine is running.
+     *
+     * The row is hidden when no such unit exists, so that machines which only
+     * watch a remote UPS do not carry a row that can never say anything.
+     *
+     * @param {?object} state the state returned by fetchMonitorState(), or null
+     *   when systemd could not be asked
+     */
+    setServiceState(state) {
+        if (this._destroyed) {
+            return;
+        }
+
+        const row = this._serviceRow;
+        if (state === null || !state.installed) {
+            row.item.visible = false;
+            return;
+        }
+
+        row.item.visible = true;
+        row.label.text = state.name;
+        row.value.text = ServiceState.describeState(state);
+        row.value.remove_style_class_name('nutmonitor-alert');
+        if (!ServiceState.isHealthy(state)) {
+            row.value.add_style_class_name('nutmonitor-alert');
+        }
     }
 
     /** Re-render the last snapshot, e.g. after a display setting changed. */
@@ -227,6 +264,7 @@ class NutIndicator extends PanelMenu.Button {
         this._settings = null;
         this._snapshot = null;
         this._rows = null;
+        this._serviceRow = null;
         super.destroy();
     }
 });
@@ -244,6 +282,7 @@ export default class NutMonitorExtension extends Extension {
         this._lastSnapshot = null;
         this._lastConfig = null;
         this._lastError = null;
+        this._lastServiceState = null;
 
         this._addIndicator();
 
@@ -277,6 +316,7 @@ export default class NutMonitorExtension extends Extension {
         this._indicator?.destroy();
         this._addIndicator();
 
+        this._indicator.setServiceState(this._lastServiceState);
         if (this._lastSnapshot !== null) {
             this._indicator.update(this._lastSnapshot, this._lastConfig);
         } else if (this._lastError !== null) {
@@ -310,6 +350,7 @@ export default class NutMonitorExtension extends Extension {
         this._lastSnapshot = null;
         this._lastConfig = null;
         this._lastError = null;
+        this._lastServiceState = null;
     }
 
     /** Cancel whatever is in flight and poll the server right away. */
@@ -391,6 +432,32 @@ export default class NutMonitorExtension extends Extension {
             });
     }
 
+    /**
+     * Read the state of the local NUT service and hand it to the indicator.
+     *
+     * This is deliberately not awaited by _poll(), so that an upsd which takes
+     * its time does not hold back the one piece of status that is always
+     * available.
+     *
+     * @param {Gio.Cancellable} cancellable cancels the D-Bus call
+     */
+    async _refreshServiceState(cancellable) {
+        try {
+            const state = await ServiceState.fetchMonitorState(cancellable);
+
+            if (this._settings === null || cancellable.is_cancelled()) {
+                return;
+            }
+
+            this._lastServiceState = state;
+            this._indicator?.setServiceState(state);
+        } catch (error) {
+            if (!Nut.isCancelled(error)) {
+                console.error(error);
+            }
+        }
+    }
+
     async _poll() {
         if (this._pending || this._settings === null) {
             return;
@@ -400,6 +467,8 @@ export default class NutMonitorExtension extends Extension {
         const cancellable = new Gio.Cancellable();
         this._cancellable = cancellable;
         const config = this._readConfig();
+
+        this._refreshServiceState(cancellable).catch(error => console.error(error));
 
         try {
             const snapshot = await Nut.fetchSnapshot(config, cancellable);

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: NUT UPS Monitor\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-14 22:32+0900\n"
+"POT-Creation-Date: 2026-08-16 00:08+0900\n"
 "PO-Revision-Date: 2026-08-14 21:00+0900\n"
 "Last-Translator: NUT UPS Monitor contributors\n"
 "Language-Team: Japanese\n"
@@ -15,51 +15,51 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/extension.js:27 src/extension.js:71 src/lib/notifier.js:124
+#: src/extension.js:28 src/extension.js:72 src/lib/notifier.js:124
 msgid "UPS"
 msgstr "UPS"
 
-#: src/extension.js:88 src/prefs.js:123
+#: src/extension.js:96 src/prefs.js:123
 msgid "Status"
 msgstr "状態"
 
-#: src/extension.js:89 src/prefs.js:120
+#: src/extension.js:97 src/prefs.js:120
 msgid "Battery charge"
 msgstr "バッテリー残量"
 
-#: src/extension.js:90 src/prefs.js:121
+#: src/extension.js:98 src/prefs.js:121
 msgid "Runtime left"
 msgstr "残り時間"
 
-#: src/extension.js:91 src/prefs.js:122
+#: src/extension.js:99 src/prefs.js:122
 msgid "Load"
 msgstr "負荷"
 
-#: src/extension.js:92
+#: src/extension.js:100
 msgid "Input voltage"
 msgstr "入力電圧"
 
-#: src/extension.js:93
+#: src/extension.js:101
 msgid "Output voltage"
 msgstr "出力電圧"
 
-#: src/extension.js:94
+#: src/extension.js:102
 msgid "Battery voltage"
 msgstr "バッテリー電圧"
 
-#: src/extension.js:95
+#: src/extension.js:103
 msgid "Nominal power"
 msgstr "定格出力"
 
-#: src/extension.js:100
+#: src/extension.js:108
 msgid "Refresh now"
 msgstr "今すぐ更新"
 
-#: src/extension.js:104
+#: src/extension.js:112
 msgid "Settings…"
 msgstr "設定…"
 
-#: src/extension.js:216 src/lib/notifier.js:96
+#: src/extension.js:253 src/lib/notifier.js:96
 msgid "UPS unreachable"
 msgstr "UPS に接続できません"
 
@@ -158,7 +158,8 @@ msgstr "同じ位置の中での並び順"
 
 #: src/prefs.js:141
 msgid "0 is leftmost. The load order of other extensions can still shift it."
-msgstr "0 が一番左です。他の拡張機能の読み込み順によって前後することがあります。"
+msgstr ""
+"0 が一番左です。他の拡張機能の読み込み順によって前後することがあります。"
 
 #: src/prefs.js:153
 msgid "Show detailed rows"
@@ -313,6 +314,38 @@ msgstr "サーバーが要求を不正として拒否しました"
 #: src/lib/nutClient.js:439
 msgid "Unknown error"
 msgstr "不明なエラー"
+
+#: src/lib/serviceState.js:139
+msgid "Not installed"
+msgstr "未インストール"
+
+#: src/lib/serviceState.js:142
+msgid "Masked"
+msgstr "マスク済み"
+
+#: src/lib/serviceState.js:147
+msgid "Running"
+msgstr "稼働中"
+
+#: src/lib/serviceState.js:149
+msgid "Starting…"
+msgstr "起動中…"
+
+#: src/lib/serviceState.js:151
+msgid "Stopping…"
+msgstr "終了処理中…"
+
+#: src/lib/serviceState.js:153
+msgid "Reloading…"
+msgstr "再読み込み中…"
+
+#: src/lib/serviceState.js:155
+msgid "Stopped"
+msgstr "停止"
+
+#: src/lib/serviceState.js:157
+msgid "Failed"
+msgstr "異常終了"
 
 #: src/lib/upsState.js:46
 msgid "Online"
