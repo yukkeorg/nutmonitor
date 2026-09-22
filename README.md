@@ -100,3 +100,30 @@ Change them in the preferences window (`make prefs`) or with `gsettings`.
 | `show-menu-detail` | `true` | Show voltages and nominal power in the menu |
 | `notify-*` | `true` | One switch per kind of notification |
 
+## Tests
+
+```sh
+make test
+```
+
+This starts `tools/mock-nutd.mjs`, a small stand-in for `upsd`, on port 13493,
+runs `tools/test-nutclient.js` against it with `gjs`, and stops the mock again.
+It needs no UPS and no NUT installation, only:
+
+- `gjs`, to run the tests with the same GLib/Gio as the shell
+- Node.js, for the mock server (`mise install` sets up the version pinned in
+  `mise.toml`)
+- `ss` from iproute2, which is used to wait until the mock is listening
+
+The tests cover the protocol client in `src/lib/nutClient.js` and the
+formatting in `src/lib/upsState.js`: parsing, authentication, error codes,
+timeouts and cancellation. The panel indicator and the notifications need a
+running shell and are not covered.
+
+The timeout checks wait about a second each, so a full run takes a few seconds.
+The connection-refused check expects nothing to be listening on port 13499. If
+either port is taken on your machine, pick others:
+
+```sh
+make test MOCK_PORT=23493 NUT_DEAD_PORT=23499
+```
