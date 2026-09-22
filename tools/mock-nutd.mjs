@@ -17,6 +17,8 @@
  *   mockups    the normal device
  *   secretups  answers ERR ACCESS-DENIED unless USERNAME/PASSWORD came first
  *   slowups    never answers, for timeout tests
+ *   dripups    answers LIST VAR one line every 300 ms, so that no single read
+ *              times out but the whole reply takes several seconds
  */
 
 import net from 'node:net';
@@ -210,6 +212,24 @@ const server = net.createServer(socket => {
         const name = tokens[2];
         if (name === 'slowups') {
             // Never answers on purpose.
+            return;
+        }
+        if (name === 'dripups') {
+            const lines = [
+                `BEGIN LIST VAR ${name}`,
+                ...Object.entries(variables()).map(
+                    ([key, value]) => `VAR ${name} ${key} ${quote(value)}`),
+                `END LIST VAR ${name}`,
+            ];
+            const timer = setInterval(() => {
+                const next = lines.shift();
+                if (next === undefined) {
+                    clearInterval(timer);
+                    return;
+                }
+                send(next);
+            }, 300);
+            socket.on('close', () => clearInterval(timer));
             return;
         }
         if (name === 'secretups' && !session.authenticated) {

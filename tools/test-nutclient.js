@@ -5,6 +5,7 @@
  * Run it through `make test`, which starts and stops the mock server.
  */
 
+import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import System from 'system';
 
@@ -116,14 +117,77 @@ async function testAuthenticated() {
 async function testTimeout() {
     print('server that never answers');
 
+    // Pass a cancellable, as the extension does, since a timeout must never
+    // cancel it: callers read a cancelled one as "I gave up on this myself".
+    const cancellable = new Gio.Cancellable();
     const start = GLib.get_monotonic_time();
     try {
-        await Nut.fetchSnapshot(config({upsName: 'slowups', timeout: 1}));
+        await Nut.fetchSnapshot(config({upsName: 'slowups', timeout: 1}), cancellable);
         check(false, 'should have thrown');
     } catch (error) {
         equals(error.code, Nut.LOCAL_ERRORS.TIMEOUT, 'error code');
+        check(!cancellable.is_cancelled(), "the caller's cancellable is left alone");
         const elapsed = (GLib.get_monotonic_time() - start) / 1000000;
         check(elapsed < 3, `gave up quickly (${elapsed.toFixed(1)} s)`);
+    }
+}
+
+async function testTimeoutGuard() {
+    print('withTimeout() when its own timer fires');
+
+    // The socket times out at about the same moment as the guard, so a real
+    // server cannot tell which of the two fired. An operation that never
+    // settles leaves only the guard.
+    const cancellable = new Gio.Cancellable();
+    let inner = null;
+    try {
+        await Nut.withTimeout(c => {
+            inner = c;
+            return new Promise(() => {});
+        }, 1, cancellable);
+        check(false, 'should have thrown');
+    } catch (error) {
+        equals(error.code, Nut.LOCAL_ERRORS.TIMEOUT, 'error code');
+        check(!cancellable.is_cancelled(), "the caller's cancellable is left alone");
+        check(inner?.is_cancelled() === true, 'the operation itself was cancelled');
+    }
+}
+
+async function testDeadline() {
+    print('server that answers too slowly as a whole');
+
+    // Every line arrives well within the socket's idle timeout, so only the
+    // deadline on the whole exchange can stop this one.
+    const cancellable = new Gio.Cancellable();
+    const start = GLib.get_monotonic_time();
+    try {
+        await Nut.fetchSnapshot(config({upsName: 'dripups', timeout: 1}), cancellable);
+        check(false, 'should have thrown');
+    } catch (error) {
+        equals(error.code, Nut.LOCAL_ERRORS.TIMEOUT, 'error code');
+        check(!cancellable.is_cancelled(), "the caller's cancellable is left alone");
+        const elapsed = (GLib.get_monotonic_time() - start) / 1000000;
+        check(elapsed < 2, `gave up at the deadline (${elapsed.toFixed(1)} s)`);
+    }
+}
+
+async function testCancelled() {
+    print('request cancelled by the caller');
+
+    const cancellable = new Gio.Cancellable();
+    GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, () => {
+        cancellable.cancel();
+        return GLib.SOURCE_REMOVE;
+    });
+
+    const start = GLib.get_monotonic_time();
+    try {
+        await Nut.fetchSnapshot(config({upsName: 'slowups', timeout: 5}), cancellable);
+        check(false, 'should have thrown');
+    } catch (error) {
+        check(Nut.isCancelled(error), `reported as a cancellation (got ${error})`);
+        const elapsed = (GLib.get_monotonic_time() - start) / 1000000;
+        check(elapsed < 1, `stopped without waiting for the timeout (${elapsed.toFixed(1)} s)`);
     }
 }
 
@@ -181,6 +245,9 @@ async function main() {
         testAccessDenied,
         testAuthenticated,
         testTimeout,
+        testTimeoutGuard,
+        testDeadline,
+        testCancelled,
         testConnectionRefused,
         testFormatting,
     ];

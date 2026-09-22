@@ -26,8 +26,9 @@ notifies you on power failure, low battery, mains recovery and lost contact.
 - Works with a local or a remote `upsd`. Authentication is optional.
 - Reports whether the local NUT service (`upsmon`) is running, read from systemd
   over D-Bus. See [The NUT service row](#the-nut-service-row).
-- Every I/O has a timeout and a cancellable, so a slow server never freezes the
-  shell.
+- A poll has to finish within the connection timeout, and the socket also gives
+  up as soon as the server goes quiet for that long, so a slow server never
+  freezes the shell.
 - Backs off exponentially (up to 60 s) while the server is unreachable, and
   returns to the normal interval once it answers again.
 - English and Japanese.

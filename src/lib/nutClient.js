@@ -120,28 +120,39 @@ function normalizeError(error) {
  * Reject a pending operation once `seconds` have passed, cancelling the I/O
  * that is still in flight.
  *
- * @param {Promise} promise the operation to guard
+ * The operation runs under a cancellable of its own, which follows the
+ * caller's one. A timeout cancels only that inner cancellable, so the caller's
+ * one is never cancelled behind its back and a timeout always comes out as a
+ * TIMEOUT error, whether the socket or this guard noticed it first.
+ *
+ * @param {function(Gio.Cancellable): Promise} start starts the operation with
+ *   the cancellable it must use
  * @param {number} seconds timeout in seconds; values <= 0 disable the guard
- * @param {Gio.Cancellable} cancellable cancelled when the timeout expires
+ * @param {Gio.Cancellable} [cancellable] the caller's cancellable
  * @returns {Promise} the guarded operation
  */
-function withTimeout(promise, seconds, cancellable) {
-    const guarded = promise.catch(error => {
+export function withTimeout(start, seconds, cancellable = null) {
+    if (!(seconds > 0)) {
+        return start(cancellable).catch(error => {
+            throw normalizeError(error);
+        });
+    }
+
+    const inner = new Gio.Cancellable();
+    // Runs the callback right away, and returns 0, when the caller has
+    // already cancelled.
+    const handlerId = cancellable?.connect(() => inner.cancel()) ?? 0;
+
+    const guarded = start(inner).catch(error => {
         throw normalizeError(error);
     });
-
-    if (!(seconds > 0)) {
-        return guarded;
-    }
 
     let timeoutId = 0;
 
     const guard = new Promise((resolve, reject) => {
         timeoutId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, seconds, () => {
             timeoutId = 0;
-            if (cancellable !== null) {
-                cancellable.cancel();
-            }
+            inner.cancel();
             reject(new NutError(LOCAL_ERRORS.TIMEOUT));
             return GLib.SOURCE_REMOVE;
         });
@@ -152,15 +163,22 @@ function withTimeout(promise, seconds, cancellable) {
             GLib.source_remove(timeoutId);
             timeoutId = 0;
         }
+        if (handlerId !== 0) {
+            cancellable.disconnect(handlerId);
+        }
     });
 }
 
-/** One short lived connection to upsd. */
+/**
+ * One short lived connection to upsd.
+ *
+ * Only used through withConnection(), which puts a deadline on the whole
+ * exchange and turns the Gio errors thrown here into NutErrors.
+ */
 class NutConnection {
-    constructor(connection, cancellable, timeout) {
+    constructor(connection, cancellable) {
         this._connection = connection;
         this._cancellable = cancellable;
-        this._timeout = timeout;
         this._input = new Gio.DataInputStream({
             base_stream: connection.get_input_stream(),
             close_base_stream: true,
@@ -176,43 +194,31 @@ class NutConnection {
      * @param {object} config connection settings
      * @param {string} config.host host name or address of upsd
      * @param {number} [config.port] TCP port, 3493 by default
-     * @param {number} [config.timeout] timeout in seconds
-     * @param {Gio.Cancellable} [cancellable] cancels the connection attempt
+     * @param {number} timeout how long the socket may stay idle during a
+     *   single read or write, in seconds
+     * @param {Gio.Cancellable} cancellable cancels every operation on the
+     *   connection
      * @returns {Promise<NutConnection>} the open connection
      */
-    static async open(config, cancellable = null) {
+    static async open(config, timeout, cancellable) {
         const host = config.host?.trim() || 'localhost';
         const port = config.port > 0 ? config.port : DEFAULT_PORT;
-        const timeout = config.timeout > 0 ? config.timeout : DEFAULT_TIMEOUT;
 
         const client = new Gio.SocketClient({timeout});
         const address = Gio.NetworkAddress.new(host, port);
+        const connection = await client.connect_async(address, cancellable);
 
-        let connection;
-        try {
-            connection = await withTimeout(
-                client.connect_async(address, cancellable), timeout, cancellable);
-        } catch (error) {
-            if (error instanceof NutError) {
-                throw error;
-            }
-            throw new NutError(LOCAL_ERRORS.CONNECTION_FAILED, error.message);
-        }
-
-        return new NutConnection(connection, cancellable, timeout);
+        return new NutConnection(connection, cancellable);
     }
 
     async _writeLine(line) {
         const bytes = this._encoder.encode(`${line}\n`);
-        await withTimeout(
-            this._output.write_all_async(bytes, GLib.PRIORITY_DEFAULT, this._cancellable),
-            this._timeout, this._cancellable);
+        await this._output.write_all_async(bytes, GLib.PRIORITY_DEFAULT, this._cancellable);
     }
 
     async _readLine() {
-        const result = await withTimeout(
-            this._input.read_line_async(GLib.PRIORITY_DEFAULT, this._cancellable),
-            this._timeout, this._cancellable);
+        const result = await this._input.read_line_async(
+            GLib.PRIORITY_DEFAULT, this._cancellable);
 
         // read_line_finish() returns [line, length]; the promisified call keeps
         // that array intact because the first element is not `true`.
@@ -340,6 +346,37 @@ function throwIfError(tokens) {
 }
 
 /**
+ * Connect, authenticate when credentials are set, run `body` and disconnect.
+ *
+ * Two timeouts guard the exchange, as in most network clients: the socket
+ * gives up on a read or write once it has been idle for `config.timeout`
+ * seconds, and the exchange as a whole, name resolution included, must be
+ * over within the same time.
+ *
+ * @param {object} config connection settings: host, port, username, password
+ *   and timeout
+ * @param {Gio.Cancellable} cancellable the caller's cancellable
+ * @param {function(NutConnection): Promise} body the requests to make
+ * @returns {Promise} whatever `body` returns
+ */
+function withConnection(config, cancellable, body) {
+    const timeout = config.timeout > 0 ? config.timeout : DEFAULT_TIMEOUT;
+
+    return withTimeout(async c => {
+        const connection = await NutConnection.open(config, timeout, c);
+
+        try {
+            if (config.username && config.password) {
+                await connection.authenticate(config.username, config.password);
+            }
+            return await body(connection);
+        } finally {
+            await connection.close();
+        }
+    }, timeout, cancellable);
+}
+
+/**
  * Read the current state of one UPS.
  *
  * @param {object} config connection settings: host, port, upsName, username,
@@ -347,14 +384,8 @@ function throwIfError(tokens) {
  * @param {Gio.Cancellable} [cancellable] cancels the whole exchange
  * @returns {Promise<{upsName: string, vars: object}>} the UPS snapshot
  */
-export async function fetchSnapshot(config, cancellable = null) {
-    const connection = await NutConnection.open(config, cancellable);
-
-    try {
-        if (config.username && config.password) {
-            await connection.authenticate(config.username, config.password);
-        }
-
+export function fetchSnapshot(config, cancellable = null) {
+    return withConnection(config, cancellable, async connection => {
         let upsName = config.upsName?.trim() ?? '';
         if (upsName === '') {
             const units = await connection.listUps();
@@ -366,9 +397,7 @@ export async function fetchSnapshot(config, cancellable = null) {
 
         const vars = await connection.listVars(upsName);
         return {upsName, vars};
-    } finally {
-        await connection.close();
-    }
+    });
 }
 
 /**
@@ -378,17 +407,8 @@ export async function fetchSnapshot(config, cancellable = null) {
  * @param {Gio.Cancellable} [cancellable] cancels the whole exchange
  * @returns {Promise<Array<{name: string, description: string}>>} the units
  */
-export async function listUps(config, cancellable = null) {
-    const connection = await NutConnection.open(config, cancellable);
-
-    try {
-        if (config.username && config.password) {
-            await connection.authenticate(config.username, config.password);
-        }
-        return await connection.listUps();
-    } finally {
-        await connection.close();
-    }
+export function listUps(config, cancellable = null) {
+    return withConnection(config, cancellable, connection => connection.listUps());
 }
 
 /**
