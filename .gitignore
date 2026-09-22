@@ -2,3 +2,5 @@ build/
 src/locale/
 src/schemas/gschemas.compiled
 po/*.mo
+
+node_modules/

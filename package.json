@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@girs/gjs": "^5.4.0",
+    "@girs/gnome-shell": "^50.0.4"
+  }
+}

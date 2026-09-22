@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "target": "ES2023",
+        "lib": ["ES2023"],
+        "checkJs": false
+    },
+    "include": ["src/**/+*.js", "ambient.d.ts"]
+}
